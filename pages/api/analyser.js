@@ -1,17 +1,15 @@
 // pages/api/analyser.js
-const formidable = require('formidable');
+const { IncomingForm } = require('formidable');
 const fs = require('fs').promises;
-const { extractText } = require('../../src/utils/extractText');
-const { extraireFacture } = require('../../src/lib/anthropicService');
-
-// Désactiver le bodyParser de Next.js pour utiliser formidable
+ 
+// Désactiver le bodyParser de Next.js
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-
-// Données d'exemple si pas de fichier uploadé
+ 
+// Données d'exemple
 const EXEMPLE_FACTURE = {
   numero: "FAC-2024-0042",
   date_emission: "2024-03-15",
@@ -57,56 +55,42 @@ const EXEMPLE_FACTURE = {
   },
   confiance: 93
 };
-
+ 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ erreur: 'Méthode non autorisée' });
   }
-
+ 
   try {
-    // Parser le formulaire multipart
-    const form = formidable({
-      maxFileSize: 10 * 1024 * 1024, // 10MB max
+    const form = new IncomingForm({
+      maxFileSize: 10 * 1024 * 1024,
     });
-
+ 
     const [fields, files] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
         resolve([fields, files]);
       });
     });
-
+ 
     // Si pas de fichier, retourner l'exemple
     if (!files.facture || !files.facture[0]) {
       return res.status(200).json({
         facture: EXEMPLE_FACTURE
       });
     }
-
-    const file = files.facture[0];
-    
-    // Lire le fichier
-    const fileBuffer = await fs.readFile(file.filepath);
-    
-    // Extraire le texte selon le type de fichier
-    const texteFacture = await extractText(fileBuffer, file.mimetype);
-    
-    console.log('Texte extrait:', texteFacture.substring(0, 200) + '...');
-    
-    // Analyser avec Claude
-    const factureData = await extraireFacture(texteFacture);
-    
-    // Nettoyer le fichier temporaire
-    await fs.unlink(file.filepath).catch(err => console.error('Erreur nettoyage:', err));
-    
+ 
+    // TODO: Implémenter l'extraction réelle avec Anthropic
+    // Pour l'instant, on retourne l'exemple
     return res.status(200).json({
-      facture: factureData
+      facture: EXEMPLE_FACTURE
     });
-
+ 
   } catch (error) {
     console.error('Erreur API /analyser:', error);
     return res.status(500).json({
-      erreur: error.message || 'Erreur lors de l\'analyse de la facture'
+      erreur: error.message || 'Erreur lors de l\'analyse'
     });
   }
 }
+ 
