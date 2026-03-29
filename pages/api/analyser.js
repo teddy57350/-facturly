@@ -65,7 +65,7 @@ export default async function handler(req, res) {
 
   try {
     // Parser le formulaire multipart
-    const form = new formidable.IncomingForm({
+    const form = formidable({
       maxFileSize: 10 * 1024 * 1024, // 10MB max
     });
 
