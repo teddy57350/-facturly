@@ -1,7 +1,7 @@
 // pages/index.js
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('VOTRE_CLÉ_PUBLIQUE');
+const stripePromise = loadStripe('price_1TGRS8567jEq7M8FdoYkX2CT');
 
 function SubscribeButton() {
   const handleSubscribe = async () => {
@@ -19,7 +19,8 @@ function SubscribeButton() {
     <button
       onClick={handleSubscribe}
       style={{
-        marginTop: '20px',
+        margin: '20px auto',
+        display: 'block',
         padding: '12px 24px',
         fontSize: '16px',
         backgroundColor: '#2563EB',
@@ -63,7 +64,7 @@ export default function Home() {
 
         .card { background: white; border-radius: 12px; border: 1px solid #E5E7EB; padding: 1.5rem; margin-bottom: 1rem; }
 
-        /* Ajoutez votre CSS ici */
+        /* Ajoutez votre CSS ici, inchangé */
       `}</style>
 
       <header>
@@ -72,7 +73,7 @@ export default function Home() {
       </header>
 
       <div className="container">
-        {/* Votre contenu existant */}
+        {/* contenu existant */}
         <div className="hero">
           <h1>Convertissez vos factures en Factur-X</h1>
           <p>Uploadez votre facture — l'IA extrait les données automatiquement et génère le format légal.</p>
@@ -97,3 +98,4 @@ export default function Home() {
     </>
   );
 }
+Note importante :
