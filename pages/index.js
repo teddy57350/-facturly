@@ -8,23 +8,16 @@ export default function Home() {
     alert("Paiement !");
   };
 
+import { useState } from "react";
+
+export default function Home() {
+  const [step, setStep] = useState(1);
+
+  const handleClick = () => {
+    alert("Paiement !");
+  };
+
   return (
-  <>
-    <header>
-      <div className="logo">
-        Factur<span>X</span>
-      </div>
-
-      <span className="badge-legale">
-        Conforme EN 16931
-      </span>
-    </header>
-
-    <div className="container">
-      ...
-    </div>
-  </>
-);
     <>
       <style jsx global>{`
         body {
@@ -82,8 +75,39 @@ export default function Home() {
           border-radius: 10px;
           border: 1px solid #ddd;
         }
+
+        header {
+          background: white;
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid #ddd;
+        }
+
+        .logo {
+          font-weight: bold;
+        }
+
+        .badge-legale {
+          background: #dcfce7;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 12px;
+        }
       `}</style>
 
+      {/* HEADER */}
+      <header>
+        <div className="logo">
+          Factur<span>X</span>
+        </div>
+
+        <span className="badge-legale">
+          Conforme EN 16931
+        </span>
+      </header>
+
+      {/* MAIN */}
       <div className="container">
         <div className="hero">
           <button className="btn" onClick={handleClick}>
@@ -107,7 +131,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* PAGE 1 */}
+        {/* STEP 1 */}
         {step === 1 && (
           <div className="card">
             <h3>Uploader une facture</h3>
@@ -121,7 +145,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* PAGE 2 */}
+        {/* STEP 2 */}
         {step === 2 && (
           <div className="card">
             <h3>Vérification des données</h3>
@@ -132,18 +156,20 @@ export default function Home() {
 
             <br /><br />
 
-            <button onClick={() => setStep(1)}>Retour</button>
+            <button onClick={() => setStep(1)}>
+              Retour
+            </button>
+
             <button className="btn" onClick={() => setStep(3)}>
               Générer →
             </button>
           </div>
         )}
 
-        {/* PAGE 3 */}
+        {/* STEP 3 */}
         {step === 3 && (
           <div className="card">
             <h3>✅ Facture générée</h3>
-
             <p>Votre Factur-X est prêt.</p>
 
             <button onClick={() => setStep(1)}>
