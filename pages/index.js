@@ -8,17 +8,12 @@ export default function Home() {
     alert("Paiement !");
   };
 
-import { useState } from "react";
-
-export default function Home() {
-  const [step, setStep] = useState(1);
-
-  const handleClick = () => {
-    alert("Paiement !");
-  };
-
   return (
     <>
+      <div>...</div>
+    </>
+  );
+}
       <style jsx global>{`
         body {
           font-family: -apple-system, BlinkMacSystemFont, sans-serif;
