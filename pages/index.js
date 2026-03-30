@@ -98,6 +98,7 @@ export default function Home() {
 
       <div className="container">
         <div className="hero">
+      <button id="payButton">Payer</button>
           <h1>Convertissez vos factures en Factur-X</h1>
           <p>Uploadez votre facture — l'IA extrait les données automatiquement et génère le format légal.</p>
           <div className="hero-badges">
