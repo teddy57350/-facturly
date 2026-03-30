@@ -265,7 +265,7 @@ export default function Home() {
         </div>
       </div>
 
-      <script dangerouslySetInnerHTML={{__html: `
+     
         let factureData = null;
         let xmlGenere = '';
 
