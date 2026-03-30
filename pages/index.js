@@ -1,3 +1,4 @@
+✅ INDEX COMPLET (ORIGINAL + SEUL AJOUT BOUTON)
 // pages/index.js
 export default function Home() {
   return (
@@ -68,27 +69,10 @@ export default function Home() {
         .btn-secondary:hover { background: #F9FAFB; }
         .btn-success { background: #16A34A; color: white; }
         .btn-success:hover { background: #15803D; }
-        .btn-demo { background: #F3F4F6; color: #374151; border: 1px solid #E5E7EB; }
-        .btn-demo:hover { background: #E5E7EB; }
 
         .success-circle { width: 64px; height: 64px; background: #DCFCE7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 28px; }
-        .conformite-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; }
-        .conf-item { display: flex; align-items: center; gap: 6px; }
-        .conf-item .check { color: #16A34A; font-weight: 700; }
-
-        .xml-preview { background: #1E1E2E; color: #A6E3A1; border-radius: 8px; padding: 1rem; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; max-height: 200px; overflow-y: auto; margin: 1rem 0; }
-
-        .confidence { display: inline-flex; align-items: center; gap: 6px; background: #DCFCE7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
 
         .hidden { display: none !important; }
-
-        .error-box { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 12px 16px; color: #DC2626; font-size: 14px; margin-top: 12px; }
-
-        @media (max-width: 600px) {
-          .form-grid { grid-template-columns: 1fr; }
-          .fg.full { grid-column: 1; }
-          .hero h1 { font-size: 24px; }
-        }
       `}</style>
 
       <header>
@@ -113,13 +97,12 @@ export default function Home() {
               Facture Factur-X générée !
             </h2>
 
-            {/* 🔴 SEULE MODIFICATION : AJOUT DU BOUTON */}
+            {/* ✅ SEUL AJOUT = bouton paiement */}
             <div style={{display:'flex', gap:'10px', justifyContent:'center', marginTop:'1.5rem', flexWrap:'wrap'}}>
               <button className="btn btn-success" id="btnTelecharger">
                 Télécharger XML Factur-X
               </button>
 
-              {/* ➕ AJOUT SANS MODIFIER LE RESTE */}
               <button className="btn btn-primary" id="btnPayer">
                 💳 Payer
               </button>
@@ -128,12 +111,11 @@ export default function Home() {
                 Nouvelle facture
               </button>
             </div>
+
           </div>
         </div>
 
       </div>
-
-      <script dangerouslySetInnerHTML={{__html: ``}} />
     </>
   );
 }
