@@ -36,34 +36,11 @@ export default function Home() {
         .format-badges { display: flex; gap: 6px; justify-content: center; }
         .fbadge { background: #EFF6FF; color: #1D4ED8; font-size: 12px; padding: 3px 10px; border-radius: 6px; font-weight: 500; }
 
-        .loading-bar { background: #E5E7EB; border-radius: 4px; height: 6px; margin: 12px 0; overflow: hidden; }
-        .loading-bar-fill { background: #2563EB; height: 100%; border-radius: 4px; animation: loading 2s ease-in-out infinite; }
-        @keyframes loading { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .fg { display: flex; flex-direction: column; gap: 5px; }
-        .fg.full { grid-column: 1 / -1; }
-        .fg label { font-size: 12px; color: #6B7280; font-weight: 500; }
-        .fg input { padding: 9px 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 14px; color: #1A1A2E; transition: border-color 0.15s; }
-        .fg input:focus { outline: none; border-color: #2563EB; }
-        .section-sep { grid-column: 1 / -1; border-top: 1px solid #E5E7EB; padding-top: 14px; margin-top: 4px; }
-        .section-label { font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-
-        table.lignes { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
-        table.lignes th { text-align: left; padding: 8px 10px; color: #6B7280; font-weight: 500; border-bottom: 1px solid #E5E7EB; background: #F9FAFB; }
-        table.lignes td { padding: 8px 10px; border-bottom: 1px solid #F3F4F6; }
-        table.lignes td input { border: none; background: transparent; font-size: 13px; width: 100%; color: #1A1A2E; }
-        table.lignes td input:focus { outline: none; border-bottom: 1px solid #2563EB; }
-
-        .totaux { display: flex; flex-direction: column; align-items: flex-end; margin-top: 16px; gap: 6px; }
-        .total-row { display: flex; gap: 3rem; font-size: 14px; }
-        .total-row .lbl { color: #6B7280; }
-        .total-ttc { font-size: 18px; font-weight: 700; border-top: 2px solid #E5E7EB; padding-top: 10px; margin-top: 4px; }
-
         .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem; }
-        .btn { padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; }
+
+        .btn { padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
         .btn-primary { background: #2563EB; color: white; }
-        .btn-secondary { background: white; color: #374151; border: 1px solid #D1D5DB; }
+        .btn-secondary { background: white; border: 1px solid #D1D5DB; }
         .btn-success { background: #16A34A; color: white; }
 
         .hidden { display: none !important; }
@@ -76,41 +53,41 @@ export default function Home() {
 
       <div className="container">
 
-        <div id="page1"></div>
-        <div id="page2" className="hidden"></div>
+        {/* ================= PAGE 3 ================= */}
+        <div id="page3">
 
-        <div id="page3" className="hidden">
-          <div className="card" style={{textAlign:'center', padding:'2.5rem 1.5rem'}}>
-            <div className="success-circle">✓</div>
+          <div className="card">
 
-            <h2 style={{fontSize:'20px', fontWeight:700, marginBottom:'8px'}}>
-              Facture Factur-X générée !
-            </h2>
-
-            <div style={{display:'flex', gap:'10px', justifyContent:'center', marginTop:'1.5rem', flexWrap:'wrap'}}>
+            <div className="actions">
 
               <button className="btn btn-success" id="btnTelecharger">
                 Télécharger XML Factur-X
-              </button>
-
-              {/* ➕ BOUTON AJOUTÉ (STRIPE) */}
-              <button
-                className="btn btn-primary"
-                id="btnPayer"
-                onClick={() => window.open("https://buy.stripe.com/test_XXXXXXXXXX", "_blank")}
-              >
-                💳 Payer
               </button>
 
               <button className="btn btn-secondary" id="btnNouveau">
                 Nouvelle facture
               </button>
 
+              {/* 💳 AJOUT STRIPE (SEUL AJOUT) */}
+              <button
+                className="btn btn-primary"
+                id="btnPayer"
+                onClick={() =>
+                  window.location.href = "https://buy.stripe.com/test_xxxxxxxxxxx"
+                }
+              >
+                💳 Payer
+              </button>
+
             </div>
+
           </div>
+
         </div>
 
       </div>
+
+      {/* ⚠️ IMPORTANT: fermeture correcte pour éviter page blanche */}
     </>
   );
 }
