@@ -1,7 +1,7 @@
 // pages/index.js
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('pk_test_51TGRHH567jEq7M8FSeNdZhGdAGCQy9yjXmHJRC78Npt07GLPQPnr52hDHIjDNxLeJDqGOtRgNhdVawWtdKbceITf00WFKo61ji');
+const stripePromise = loadStripe('VOTRE_CLÉ_PUBLIQUE');
 
 function SubscribeButton() {
   const handleSubscribe = async () => {
@@ -63,7 +63,7 @@ export default function Home() {
 
         .card { background: white; border-radius: 12px; border: 1px solid #E5E7EB; padding: 1.5rem; margin-bottom: 1rem; }
 
-        /* ... tout votre CSS inchangé ... */
+        /* Ajoutez votre CSS ici */
       `}</style>
 
       <header>
@@ -72,7 +72,7 @@ export default function Home() {
       </header>
 
       <div className="container">
-        {/* Contenu principal */}
+        {/* Votre contenu existant */}
         <div className="hero">
           <h1>Convertissez vos factures en Factur-X</h1>
           <p>Uploadez votre facture — l'IA extrait les données automatiquement et génère le format légal.</p>
@@ -82,14 +82,16 @@ export default function Home() {
             <span className="hbadge">Gratuit pour démarrer</span>
           </div>
         </div>
+
         <div className="steps">
           <div className="step active" id="step1"><span className="step-n">ÉTAPE 1</span>Import</div>
           <div className="step" id="step2"><span className="step-n">ÉTAPE 2</span>Vérification</div>
           <div className="step" id="step3"><span className="step-n">ÉTAPE 3</span>Export</div>
         </div>
+
         {/* ... autres contenus ... */}
 
-        {/* Le bouton placé ici, en fin de page */}
+        {/* Placez le bouton ici, en fin de la div container */}
         <SubscribeButton />
       </div>
     </>
