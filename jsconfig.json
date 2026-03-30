@@ -4,7 +4,7 @@
     "paths": {
       "@/*": ["./*"]
     }
-    "engines": {
+  "engines": {
 "node": ">=18"
   }
 }
