@@ -447,4 +447,32 @@ export default function Home() {
       `}} />
     </>
   );
+}import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51TGRHH567jEq7M8FSeNdZhGdAGCQy9yjXmHJRC78Npt07GLPQPnr52hDHIjDNxLeJDqGOtRgNhdVawWtdKbceITf00WFKo61ji');
+
+function SubscribeButton() {
+  const handleSubscribe = async () => {
+    const stripe = await stripePromise;
+    const response = await fetch('/api/create-checkout-session', { method: 'POST' });
+    const data = await response.json();
+
+    if (data.sessionId) {
+      await stripe.redirectToCheckout({ sessionId: data.sessionId });
+    } else {
+      alert('Erreur lors de la création de la session.');
+    }
+  };
+
+  return <button onClick={handleSubscribe}>S’abonner à 19€</button>;
+}
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Page principale</h1>
+      {/* Ajoutez votre bouton ici */}
+      <SubscribeButton />
+    </div>
+  );
 }
