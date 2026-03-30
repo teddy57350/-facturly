@@ -448,8 +448,8 @@ export default function Home() {
     </>
   );
 }
-<button
-  onClick={async () => {
+export default function Home() {
+  const handleButtonClick = async () => {
     const stripe = await stripePromise;
     const response = await fetch('/api/create-checkout-session', { method: 'POST' });
     const data = await response.json();
@@ -458,25 +458,28 @@ export default function Home() {
     } else {
       alert('Erreur lors de la création de la session.');
     }
-  }}
- return (
-  <>
-    {/* ... votre style et autres contenus ... */}
+  };
 
-    {/* fin de votre contenu, juste avant la dernière balise fermante */}
-<button
-      style={{
-        marginTop: '20px',
-        padding: '12px 24px',
-        fontSize: '16px',
-        backgroundColor: '#2563EB',
-        color: 'white',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer'
-      }}
-    >
-      S’abonner à 19€
-    </button>
-  </>
-);
+  return (
+    <>
+      {/* Vos styles et contenus ici */}
+      {/* ... */}
+      {/* Le bouton placé en fin de JSX */}
+      <button
+        onClick={handleButtonClick}
+        style={{
+          marginTop: '20px',
+          padding: '12px 24px',
+          fontSize: '16px',
+          backgroundColor: '#2563EB',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer'
+        }}
+      >
+        S’abonner à 19€
+      </button>
+    </>
+  );
+}
