@@ -1,32 +1,31 @@
-import { loadStripe } from '@stripe/stripe-js';
+import Stripe from 'stripe';
 
-const stripePromise = loadStripe('pk_test_51TGRHH567jEq7M8FSeNdZhGdAGCQy9yjXmHJRC78Npt07GLPQPnr52hDHIjDNxLeJDqGOtRgNhdVawWtdKbceITf00WFKo61ji');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-function AbonneButton() {
-  const handleSubscribe = async () => {
-    const stripe = await stripePromise;
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).end('Method Not Allowed');
+  }
 
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          // Remplacez par votre ID de prix Stripe pour 19€
+          price: 'price_1TGRS8567jEq7M8FdoYkX2CT', 
+          quantity: 1,
+        },
+      ],
+      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.origin}/cancel`,
     });
-    const data = await response.json();
 
-    if (data.sessionId) {
-      await stripe.redirectToCheckout({ sessionId: data.sessionId });
-    } else {
-      alert('Erreur lors de la création de la session.');
-    }
-  };
-
-  return <button onClick={handleSubscribe}>S’abonner</button>;
-}
-
-export default function Page() {
-  return (
-    <div>
-      {/* Autres éléments de votre page */}
-      <h1>Abonnement</h1>
-      <AbonneButton />
-    </div>
-  );
+    res.status(200).json({ sessionId: session.id });
+  } catch (err) {
+    console.error('Erreur création session Stripe:', err);
+    res.status(500).json({ error: 'Impossible de créer la session Stripe' });
+  }
 }
