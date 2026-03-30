@@ -87,7 +87,7 @@ export default function Home() {
               } else {
                 alert('Erreur lors de la création de la session.');
               }
-            });
+           </
         });
       </script>
     </>
