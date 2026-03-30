@@ -1,7 +1,7 @@
 // pages/index.js
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(process.env.pk_test_51TGRHH567jEq7M8FSeNdZhGdAGCQy9yjXmHJRC78Npt07GLPQPnr52hDHIjDNxLeJDqGOtRgNhdVawWtdKbceITf00WFKo61ji);
+const stripePromise = loadStripe(pk_test_51TGRHH567jEq7M8FSeNdZhGdAGCQy9yjXmHJRC78Npt07GLPQPnr52hDHIjDNxLeJDqGOtRgNhdVawWtdKbceITf00WFKo61ji);
 
 export default function Home() {
   const handleButtonClick = async () => {
