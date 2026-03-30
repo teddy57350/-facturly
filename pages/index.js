@@ -464,7 +464,7 @@ export default function Home() {
     {/* ... votre style et autres contenus ... */}
 
     {/* fin de votre contenu, juste avant la dernière balise fermante */}
-    <button
+<button
       style={{
         marginTop: '20px',
         padding: '12px 24px',
