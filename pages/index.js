@@ -9,6 +9,22 @@ export default function Home() {
   };
 
   return (
+  <>
+    <header>
+      <div className="logo">
+        Factur<span>X</span>
+      </div>
+
+      <span className="badge-legale">
+        Conforme EN 16931
+      </span>
+    </header>
+
+    <div className="container">
+      ...
+    </div>
+  </>
+);
     <>
       <style jsx global>{`
         body {
