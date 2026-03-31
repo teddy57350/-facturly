@@ -1,7 +1,7 @@
 import formidable from "formidable";
 import fs from "fs";
 import pdfParse from "pdf-parse";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 
 export const config = {
   api: {
@@ -9,8 +9,8 @@ export const config = {
   },
 };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 export default async function handler(req, res) {
@@ -29,15 +29,21 @@ export default async function handler(req, res) {
 
       const text = pdfData.text;
 
-      const prompt = `
-Tu es une IA spécialisée en facturation européenne (EN16931 / Factur-X).
+      const message = await anthropic.messages.create({
+        model: "claude-3-5-sonnet-20241022",
+        max_tokens: 2000,
+        messages: [
+          {
+            role: "user",
+            content: `
+Tu es une IA spécialisée en facturation européenne (Factur-X / EN16931).
 
 Analyse cette facture et retourne UNIQUEMENT un JSON valide :
 
-Texte facture :
+FACTURE:
 ${text}
 
-Format attendu :
+FORMAT:
 {
   "supplier": "",
   "customer": "",
@@ -45,28 +51,23 @@ Format attendu :
   "vat": "",
   "date": "",
   "items": [
-    {
-      "name": "",
-      "price": ""
-    }
+    { "name": "", "price": "" }
   ]
 }
-`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+            `,
+          },
+        ],
       });
 
-      const result = completion.choices[0].message.content;
+      const resultText = message.content[0].text;
 
       res.status(200).json({
         success: true,
-        data: JSON.parse(result),
+        data: JSON.parse(resultText),
       });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ error: "IA error" });
+      res.status(500).json({ error: "Claude IA error" });
     }
   });
 }
