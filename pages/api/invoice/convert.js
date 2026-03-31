@@ -1,4 +1,6 @@
-import { PDFDocument, StandardFonts } from "pdf-lib";
+import formidable from "formidable";
+import fs from "fs";
+import Anthropic from "@anthropic-ai/sdk";
 
 export const config = {
   api: {
@@ -6,45 +8,54 @@ export const config = {
   },
 };
 
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
 export default async function handler(req, res) {
   try {
-    // créer PDF
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([600, 800]);
+    const form = new formidable.IncomingForm();
 
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        return res.status(500).json({ error: "Upload error" });
+      }
 
-    page.drawText("FACTURE FACTUR-X", {
-      x: 50,
-      y: 750,
-      size: 20,
-      font,
+      const file = files.file;
+
+      const fileData = fs.readFileSync(file.filepath, "utf8");
+
+      // 🔥 IA analyse facture
+      const response = await client.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 500,
+        messages: [
+          {
+            role: "user",
+            content: `
+Analyse cette facture et retourne un JSON:
+- client
+- total
+- date
+- lignes
+
+FACTURE:
+${fileData}
+            `,
+          },
+        ],
+      });
+
+      const aiText = response.content[0].text;
+
+      // 👉 on renvoie direct pour test
+      res.status(200).json({
+        success: true,
+        ai: aiText,
+      });
     });
-
-    page.drawText("Client: ACME Corp", {
-      x: 50,
-      y: 700,
-      size: 12,
-      font,
-    });
-
-    page.drawText("Total: 19€", {
-      x: 50,
-      y: 680,
-      size: 12,
-      font,
-    });
-
-    const pdfBytes = await pdfDoc.save();
-
-    // réponse
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "attachment; filename=facture.pdf");
-
-    res.status(200).send(Buffer.from(pdfBytes));
-
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Erreur PDF" });
+    res.status(500).json({ error: "server error" });
   }
 }
