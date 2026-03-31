@@ -13,62 +13,25 @@ const client = new Anthropic({
 });
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
+  try {
+    // ⚠️ ici tu simules un PDF (test)
+    const pdfContent = `
+      FACTURE FACTUR-X
+
+      Client: ACME Corp
+      Total: 19€
+    `;
+
+    const buffer = Buffer.from(pdfContent);
+
+    // ✅ IMPORTANT
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=facture.pdf");
+
+    res.status(200).send(buffer);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur génération PDF" });
   }
-
-  const form = new formidable.IncomingForm();
-
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({ error: "Upload error" });
-    }
-
-    const file = files.file;
-
-    if (!file) {
-      return res.status(400).json({ error: "No file received" });
-    }
-
-    try {
-      const content = fs.readFileSync(file.filepath, "utf8");
-
-      const ai = await client.messages.create({
-        model: "claude-3-5-sonnet-20241022",
-        max_tokens: 2000,
-        messages: [
-          {
-            role: "user",
-            content: `
-Tu es une IA de conversion Factur-X (EN 16931).
-
-Convertis cette facture en JSON structuré propre.
-
-FACTURE:
-${content}
-
-Réponds uniquement en JSON valide :
-{
-  "invoice_number": "",
-  "seller": "",
-  "buyer": "",
-  "date": "",
-  "total": "",
-  "currency": "",
-  "lines": []
-}
-            `,
-          },
-        ],
-      });
-
-      res.status(200).json({
-        success: true,
-        result: ai.content[0].text,
-      });
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({ error: "AI conversion failed" });
-    }
-  });
 }
