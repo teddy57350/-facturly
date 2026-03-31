@@ -6,7 +6,6 @@ export default function Home() {
 
   return (
     <>
-      {/* GLOBAL STYLE */}
       <style jsx global>{`
         body {
           margin: 0;
@@ -55,45 +54,15 @@ export default function Home() {
           font-weight: 600;
         }
 
-        .steps {
-          display: flex;
-          border-radius: 10px;
-          overflow: hidden;
-          border: 1px solid #ddd;
-          margin: 2rem 0;
-        }
-
-        .step {
-          flex: 1;
-          padding: 10px;
-          text-align: center;
-          background: #f1f1f1;
-          font-size: 13px;
-        }
-
-        .step.active {
-          background: #4f46e5;
-          color: white;
-        }
-
-        .card {
-          background: white;
-          padding: 1.5rem;
-          border-radius: 12px;
-          border: 1px solid #eee;
-          margin-top: 1rem;
-        }
-
         .pricing {
           display: flex;
           gap: 20px;
           justify-content: center;
-          flex-wrap: wrap;
           margin-top: 3rem;
         }
 
         .plan {
-          width: 300px;
+          width: 280px;
           padding: 2rem;
           border-radius: 14px;
           background: white;
@@ -104,7 +73,6 @@ export default function Home() {
         .plan.pro {
           background: #111827;
           color: white;
-          transform: scale(1.05);
         }
 
         .price {
@@ -112,36 +80,14 @@ export default function Home() {
           font-weight: 800;
           margin: 10px 0;
         }
-
-        .invoice {
-          margin-top: 3rem;
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 2rem;
-        }
-
-        .htmlBox {
-          margin-top: 2rem;
-          background: #0f172a;
-          color: #22c55e;
-          padding: 1rem;
-          border-radius: 10px;
-          font-size: 12px;
-          overflow-x: auto;
-          white-space: pre-wrap;
-        }
       `}</style>
 
-      {/* HEADER */}
-      <header>
-        <div className="logo">FacturX SaaS</div>
-        <div className="badge">EN 16931</div>
-      </header>
-
       <div className="container">
+        <header>
+          <div className="logo">FacturX SaaS</div>
+          <div className="badge">EN 16931</div>
+        </header>
 
-        {/* HERO */}
         <div className="hero">
           <h1>Factur-X automatique</h1>
           <p>IA + génération PDF/A-3 + XML embarqué</p>
@@ -151,14 +97,6 @@ export default function Home() {
           </button>
         </div>
 
-        {/* STEPS */}
-        <div className="steps">
-          <div className={`step ${step === 1 ? "active" : ""}`}>Upload</div>
-          <div className={`step ${step === 2 ? "active" : ""}`}>Vérification</div>
-          <div className={`step ${step === 3 ? "active" : ""}`}>Export</div>
-        </div>
-
-        {/* STEP 1 */}
         {step === 1 && (
           <div className="card">
             <h3>📄 Upload facture</h3>
@@ -170,140 +108,43 @@ export default function Home() {
           </div>
         )}
 
-        {/* STEP 2 */}
         {step === 2 && (
           <div className="card">
             <h3>🔍 Vérification IA</h3>
-            <input placeholder="Client" />
-            <br /><br />
-
-            <button onClick={() => setStep(1)}>Retour</button>{" "}
             <button className="btn" onClick={() => setStep(3)}>
               Générer →
             </button>
           </div>
         )}
 
-        {/* STEP 3 */}
         {step === 3 && (
-          <>
-            <div className="card">
-              <h3>✅ Facture générée</h3>
-              <p>Format Factur-X prêt</p>
+          <div className="card">
+            <h3>✅ Facture générée</h3>
+            <p>Total : 19€</p>
 
-              <button className="btn" onClick={() => setStep(0)}>
-                Nouvelle facture
-              </button>
-            </div>
-
-            {/* 🧾 FACTURE VISUELLE */}
-            <div className="invoice">
-
-              <h2>🧾 FACTURE #INV-001</h2>
-
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>
-                  <p><b>FacturX SaaS</b></p>
-                  <p>Entreprise Demo</p>
-                </div>
-
-                <div style={{ textAlign: "right" }}>
-                  <p><b>Date :</b> 01/01/2026</p>
-                  <p><b>Client :</b> ACME Corp</p>
-                </div>
-              </div>
-
-              <hr />
-
-              <table width="100%" cellPadding="8">
-                <thead>
-                  <tr style={{ background: "#f3f4f6" }}>
-                    <th align="left">Description</th>
-                    <th>Qté</th>
-                    <th>Prix</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td>Abonnement SaaS Pro</td>
-                    <td align="center">1</td>
-                    <td align="center">19€</td>
-                    <td align="center">19€</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <h3 style={{ textAlign: "right" }}>
-                Total : 19€
-              </h3>
-
-            </div>
-
-            {/* 💻 HTML CONVERSION */}
-            <div className="htmlBox">
-
-{`<div class="invoice">
-  <h2>FACTURE #INV-001</h2>
-
-  <p>FacturX SaaS</p>
-  <p>Client: ACME Corp</p>
-  <p>Date: 01/01/2026</p>
-
-  <table>
-    <tr>
-      <td>Abonnement SaaS Pro</td>
-      <td>1</td>
-      <td>19€</td>
-    </tr>
-  </table>
-
-  <h3>Total: 19€</h3>
-</div>`}
-
-            </div>
-          </>
+            <button className="btn" onClick={() => setStep(0)}>
+              Nouvelle facture
+            </button>
+          </div>
         )}
 
-        {/* PRICING */}
         <div className="pricing">
-
-          {/* FREE */}
           <div className="plan">
             <h3>Gratuit</h3>
             <div className="price">0€</div>
-
-            <p>
-              ✔ 10 factures / mois<br />
-              ✔ Export Factur-X<br />
-              ✔ Support standard
-            </p>
-
-            <button className="btn" onClick={() => alert("Plan Gratuit activé")}>
+            <button className="btn" onClick={() => alert("Gratuit")}>
               Commencer
             </button>
           </div>
 
-          {/* PRO */}
           <div className="plan pro">
             <h3>Pro</h3>
             <div className="price">19€</div>
-
-            <p>
-              ✔ Factures illimitées<br />
-              ✔ IA avancée<br />
-              ✔ Export premium<br />
-              ✔ Support prioritaire
-            </p>
-
-            <button className="btn" onClick={() => alert("Stripe checkout 19€/mois")}>
+            <button className="btn" onClick={() => alert("Stripe checkout")}>
               Passer Pro
             </button>
           </div>
-
         </div>
-
       </div>
     </>
   );
