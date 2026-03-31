@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { buffer } from "micro";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 export const config = {
   api: {
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   let event;
 
   try {
-   const rawBody = await req.text();
+  const rawBody = await req.text();
 
     event = stripe.webhooks.constructEvent(
       rawBody.toString(),
