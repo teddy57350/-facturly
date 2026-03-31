@@ -1,5 +1,4 @@
-const { genererFacturX } = require('../../src/lib/facturxGenerator');
-const { PDFDocument, StandardFonts } = require('pdf-lib');
+import { PDFDocument, StandardFonts } from "pdf-lib";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -10,13 +9,10 @@ export default async function handler(req, res) {
     const { facture } = req.body;
 
     if (!facture) {
-      return res.status(400).json({ erreur: 'Données de facture manquantes' });
+      return res.status(400).json({ erreur: 'Données manquantes' });
     }
 
-    // 🔥 1. XML Factur-X
-    const xml = genererFacturX(facture);
-
-    // 🔥 2. PDF simple (affichage facture)
+    // 🔥 PDF simple mais fonctionnel
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]);
 
@@ -24,22 +20,32 @@ export default async function handler(req, res) {
 
     page.drawText("FACTURE FACTUR-X", { x: 50, y: 750, size: 20, font });
 
-    page.drawText(`Client: ${facture.client || "N/A"}`, { x: 50, y: 700, size: 12, font });
-    page.drawText(`Total: ${facture.total || "N/A"} €`, { x: 50, y: 680, size: 12, font });
+    page.drawText(`Client: ${facture.client || "N/A"}`, {
+      x: 50,
+      y: 700,
+      size: 12,
+      font,
+    });
+
+    page.drawText(`Total: ${facture.total || "N/A"} €`, {
+      x: 50,
+      y: 680,
+      size: 12,
+      font,
+    });
 
     const pdfBytes = await pdfDoc.save();
 
-    // 🔥 3. Réponse SAAS complète
-    return res.status(200).json({
-      success: true,
-      xml: xml,
-      pdf: Buffer.from(pdfBytes).toString("base64")
-    });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=facture.pdf"
+    );
+
+    return res.status(200).send(Buffer.from(pdfBytes));
 
   } catch (error) {
-    console.error('Erreur API /generer:', error);
-    return res.status(500).json({
-      erreur: error.message || 'Erreur génération Factur-X'
-    });
+    console.error(error);
+    return res.status(500).json({ erreur: "Erreur génération PDF" });
   }
 }
