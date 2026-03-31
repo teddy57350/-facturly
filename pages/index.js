@@ -15,7 +15,6 @@ const handleGenerate = async () => {
   setStep(2);
 
   try {
-    // 🔵 1. IA (convert PDF → JSON facture)
     const formData = new FormData();
     formData.append("file", file);
 
@@ -33,7 +32,6 @@ const handleGenerate = async () => {
       facture = data.ai;
     }
 
-    // 🟢 2. GENERATION PDF
     const res2 = await fetch("/api/invoice/generate", {
       method: "POST",
       headers: {
@@ -44,7 +42,6 @@ const handleGenerate = async () => {
 
     const blob = await res2.blob();
 
-    // 📥 DOWNLOAD
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
