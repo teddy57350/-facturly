@@ -3,6 +3,25 @@ import { useState } from "react";
 export default function Home() {
   const [step, setStep] = useState(0);
 
+  const handleCheckout = async () => {
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.assign(data.url);
+      } else {
+        alert("Erreur Stripe");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur serveur");
+    }
+  };
+
   return (
     <>
       <style jsx global>{`
@@ -51,15 +70,6 @@ export default function Home() {
           border-radius: 10px;
           cursor: pointer;
           font-weight: 600;
-          margin: 5px;
-        }
-
-        .card {
-          background: white;
-          padding: 1.5rem;
-          border-radius: 12px;
-          border: 1px solid #e5e7eb;
-          margin-top: 1rem;
         }
 
         .pricing {
@@ -67,7 +77,6 @@ export default function Home() {
           gap: 20px;
           justify-content: center;
           margin-top: 3rem;
-          flex-wrap: wrap;
         }
 
         .plan {
@@ -77,13 +86,23 @@ export default function Home() {
           background: white;
           border: 1px solid #e5e7eb;
           text-align: center;
-          position: relative;
         }
 
         .plan.pro {
           background: #111827;
           color: white;
-          transform: scale(1.05);
+          position: relative;
+        }
+
+        .popular {
+          position: absolute;
+          top: -10px;
+          right: 10px;
+          background: #22c55e;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 12px;
         }
 
         .price {
@@ -91,29 +110,14 @@ export default function Home() {
           font-weight: 800;
           margin: 10px 0;
         }
-
-        .populaire {
-          position: absolute;
-          top: -10px;
-          right: 10px;
-          background: #f59e0b;
-          color: black;
-          padding: 4px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: bold;
-        }
       `}</style>
 
       <div className="container">
-
-        {/* HEADER */}
         <header>
           <div className="logo">FacturX SaaS</div>
           <div className="badge">EN 16931</div>
         </header>
 
-        {/* HERO */}
         <div className="hero">
           <h1>Factur-X automatique</h1>
           <p>IA + génération PDF/A-3 + XML embarqué</p>
@@ -123,84 +127,47 @@ export default function Home() {
           </button>
         </div>
 
-        {/* STEP 1 */}
-        {step === 1 && (
-          <div className="card">
-            <h3>📄 Upload facture</h3>
-            <input type="file" />
-            <br /><br />
-            <button className="btn" onClick={() => setStep(2)}>
-              Continuer →
-            </button>
-          </div>
-        )}
-
-        {/* STEP 2 */}
-        {step === 2 && (
-          <div className="card">
-            <h3>🔍 Analyse IA</h3>
-            <p>Extraction en cours...</p>
-            <button className="btn" onClick={() => setStep(3)}>
-              Générer Factur-X →
-            </button>
-          </div>
-        )}
-
-        {/* STEP 3 */}
-        {step === 3 && (
-          <div className="card">
-            <h3>✅ Facture générée</h3>
-            <p>Total : 19€</p>
-
-            <button className="btn" onClick={() => setStep(0)}>
-              Nouvelle facture
-            </button>
-          </div>
-        )}
-
-        {/* PRICING */}
         <div className="pricing">
-
           {/* FREE */}
-         <div className="pricing">
+          <div className="plan">
+            <h3>Gratuit</h3>
+            <div className="price">0€</div>
 
-  <div className="plan">
-    <h3>Gratuit</h3>
-    <div className="price">0€</div>
+            <p>
+              ✔ 10 factures / mois<br />
+              ✔ Export Factur-X<br />
+              ✔ Support standard
+            </p>
 
-    <button className="btn">
-      Commencer
-    </button>
-  </div>
+            <button className="btn">
+              Commencer
+            </button>
+          </div>
 
-  <div className="plan pro">
-    <h3>Pro</h3>
-    <div className="price">19€</div>
+          {/* PRO */}
+          <div className="plan pro">
+            <div className="popular">Populaire</div>
 
-    <button
-      type="button"
-      className="btn"
-      onClick={async () => {
-        try {
-          const res = await fetch("/api/stripe/checkout", {
-            method: "POST",
-          });
+            <h3>Pro</h3>
+            <div className="price">19€</div>
 
-          const data = await res.json();
+            <p>
+              ✔ Factures illimitées<br />
+              ✔ IA avancée<br />
+              ✔ Export premium<br />
+              ✔ Support prioritaire
+            </p>
 
-          if (data.url) {
-            window.location.assign(data.url);
-          } else {
-            alert("Erreur Stripe");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("Erreur serveur");
-        }
-      }}
-    >
-      Passer Pro
-    </button>
-  </div>
-
-</div>
+            <button
+              type="button"
+              className="btn"
+              onClick={handleCheckout}
+            >
+              Passer Pro
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
