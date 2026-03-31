@@ -1,8 +1,7 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [step, setStep] = useState(0);
-  const [file, setFile] = useState(null);
+  const [tab, setTab] = useState("home");
 
   const handleCheckout = async () => {
     try {
@@ -24,160 +23,155 @@ export default function Home() {
   };
 
   return (
-    <div style={{ fontFamily: "Arial", padding: 20 }}>
+    <>
+      <style jsx global>{`
+        body {
+          margin: 0;
+          font-family: Arial;
+          background: #f6f7fb;
+        }
 
-      {/* HERO */}
-      <h1>Factur-X SaaS</h1>
-      <p>IA + génération Factur-X</p>
+        .container {
+          max-width: 1000px;
+          margin: auto;
+          padding: 20px;
+        }
 
-      {/* 🔥 BOUTON COMMENCER (FIXÉ) */}
-      <button
-        onClick={() => {
-          console.log("CLICK HERO");
-          setStep(1);
-        }}
-        style={{
-          padding: "10px 20px",
-          background: "#4f46e5",
-          color: "white",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer",
-          marginBottom: 20,
-        }}
-      >
-        Commencer
-      </button>
+        header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: white;
+          padding: 15px 20px;
+          border-bottom: 1px solid #eee;
+        }
 
-      {/* STEP 1 */}
-      {step === 1 && (
-        <div style={{ marginTop: 20, padding: 20, border: "1px solid #ddd" }}>
-          <h3>📄 Upload facture</h3>
+        .logo {
+          font-weight: bold;
+        }
 
-          <input
-            type="file"
-            onChange={(e) => {
-              setFile(e.target.files[0]);
-              console.log("FILE:", e.target.files[0]);
-            }}
-          />
+        .tabs {
+          display: flex;
+          gap: 10px;
+        }
 
-          <br /><br />
+        .tab {
+          padding: 8px 12px;
+          border-radius: 8px;
+          cursor: pointer;
+          background: #eee;
+          font-size: 14px;
+        }
 
-          {/* 🔥 BOUTON GRATUIT FIXÉ */}
-          <button
-            onClick={() => {
-              console.log("CLICK FREE");
-              if (!file) {
-                alert("Ajoute une facture");
-                return;
-              }
-              setStep(2);
-            }}
-            style={{
-              padding: "10px 20px",
-              background: "#16a34a",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Continuer
-          </button>
-        </div>
-      )}
+        .tab.active {
+          background: #4f46e5;
+          color: white;
+        }
 
-      {/* STEP 2 */}
-      {step === 2 && (
-        <div style={{ marginTop: 20, padding: 20, border: "1px solid #ddd" }}>
-          <h3>🔍 Analyse IA</h3>
+        .card {
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          margin-top: 20px;
+        }
 
-          <button
-            onClick={() => setStep(3)}
-            style={{
-              padding: "10px 20px",
-              background: "#4f46e5",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Générer
-          </button>
-        </div>
-      )}
+        .btn {
+          padding: 10px 15px;
+          background: #4f46e5;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          margin-top: 10px;
+        }
 
-      {/* STEP 3 */}
-      {step === 3 && (
-        <div style={{ marginTop: 20, padding: 20, border: "1px solid #ddd" }}>
-          <h3>✅ Facture générée</h3>
+        .plan {
+          border: 1px solid #ddd;
+          padding: 15px;
+          border-radius: 10px;
+          width: 250px;
+        }
 
-          <button
-            onClick={() => setStep(0)}
-            style={{
-              padding: "10px 20px",
-              background: "#111827",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Nouvelle facture
-          </button>
-        </div>
-      )}
+        .pricing {
+          display: flex;
+          gap: 20px;
+          margin-top: 30px;
+        }
+      `}</style>
 
-      {/* PRICING */}
-      <div style={{ display: "flex", gap: 20, marginTop: 40 }}>
+      <div className="container">
 
-        {/* FREE */}
-        <div style={{ border: "1px solid #ddd", padding: 20, width: 200 }}>
-          <h3>Gratuit</h3>
-          <p>10 factures / mois</p>
+        {/* HEADER */}
+        <header>
+          <div className="logo">FacturX SaaS 🚀</div>
 
-          {/* 🔥 FIX COMMENCER FREE */}
-          <button
-            onClick={() => {
-              console.log("CLICK FREE PLAN");
-              setStep(1);
-            }}
-            style={{
-              padding: "10px",
-              background: "#4f46e5",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Commencer
-          </button>
-        </div>
+          <div className="tabs">
+            <div
+              className={`tab ${tab === "home" ? "active" : ""}`}
+              onClick={() => setTab("home")}
+            >
+              🚀 Commencer
+            </div>
 
-        {/* PRO */}
-        <div style={{ border: "2px solid black", padding: 20, width: 200 }}>
-          <h3>Pro</h3>
-          <p>Illimité</p>
+            <div
+              className={`tab ${tab === "auth" ? "active" : ""}`}
+              onClick={() => setTab("auth")}
+            >
+              👤 Connexion
+            </div>
+          </div>
+        </header>
 
-          <button
-            onClick={handleCheckout}
-            style={{
-              padding: "10px",
-              background: "black",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Passer Pro
-          </button>
-        </div>
+        {/* HOME */}
+        {tab === "home" && (
+          <>
+            <div className="card">
+              <h1>Factur-X automatique</h1>
+              <p>Conversion facture → PDF/A-3 + XML (EN 16931)</p>
+
+              <button className="btn" onClick={() => alert("Upload bientôt")}>
+                Upload facture
+              </button>
+            </div>
+
+            {/* PRICING */}
+            <div className="pricing">
+
+              <div className="plan">
+                <h3>Gratuit</h3>
+                <p>10 factures / mois</p>
+                <button className="btn" onClick={() => alert("Free activé")}>
+                  Commencer
+                </button>
+              </div>
+
+              <div className="plan">
+                <h3>Pro</h3>
+                <p>Illimité</p>
+                <button className="btn" onClick={handleCheckout}>
+                  Passer Pro
+                </button>
+              </div>
+
+            </div>
+          </>
+        )}
+
+        {/* AUTH */}
+        {tab === "auth" && (
+          <div className="card">
+            <h2>Connexion / Inscription</h2>
+
+            <input placeholder="Email" style={{ width: "100%", padding: 10, marginTop: 10 }} />
+            <input placeholder="Mot de passe" type="password" style={{ width: "100%", padding: 10, marginTop: 10 }} />
+
+            <button className="btn">
+              Se connecter
+            </button>
+          </div>
+        )}
 
       </div>
-    </div>
+    </>
   );
 }
