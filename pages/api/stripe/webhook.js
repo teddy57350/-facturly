@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../../../next/lib/supabase"
 
 export const config = {
   api: {
