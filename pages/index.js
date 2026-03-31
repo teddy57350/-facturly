@@ -267,9 +267,10 @@ export default function Home() {
         )}
 
         {/* PRICING */}
-      import { useCallback } from "react";
+   import { useState } from "react";
 
 export default function Home() {
+  const [step, setStep] = useState(1);
 
   const handleCheckout = async () => {
     const res = await fetch("/api/stripe/checkout", {
@@ -284,24 +285,91 @@ export default function Home() {
   };
 
   return (
-    <div className="pricing">
+    <>
+      {/* HERO */}
+      <div className="hero">
+        <h1>Factur-X automatique</h1>
+        <p>IA + génération PDF/A-3 + XML embarqué</p>
 
-      <div className="plan">
-        <h3>Gratuit</h3>
-        <div className="price">0€</div>
-
-        <button>Commencer</button>
-      </div>
-
-      <div className="plan pro">
-        <h3>Pro</h3>
-        <div className="price">19€</div>
-
-        <button className="btn" onClick={handleCheckout}>
-          Passer Pro
+        <button className="btn" onClick={() => alert("CLICK OK")}>
+          🚀 Commencer
         </button>
       </div>
 
-    </div>
+      {/* STEPS */}
+      <div className="steps">
+        <div className={`step ${step === 1 ? "active" : ""}`}>Upload</div>
+        <div className={`step ${step === 2 ? "active" : ""}`}>Vérification</div>
+        <div className={`step ${step === 3 ? "active" : ""}`}>Export</div>
+      </div>
+
+      {/* STEP 1 */}
+      {step === 1 && (
+        <div className="card">
+          <h3>📄 Upload facture</h3>
+          <input type="file" />
+          <br /><br />
+          <button className="btn" onClick={() => setStep(2)}>
+            Continuer →
+          </button>
+        </div>
+      )}
+
+      {/* STEP 2 */}
+      {step === 2 && (
+        <div className="card">
+          <h3>🔍 Vérification IA</h3>
+          <input placeholder="Client" />
+          <br /><br />
+
+          <button onClick={() => setStep(1)}>Retour</button>{" "}
+          <button className="btn" onClick={() => setStep(3)}>
+            Générer →
+          </button>
+        </div>
+      )}
+
+      {/* STEP 3 */}
+      {step === 3 && (
+        <>
+          <div className="card">
+            <h3>✅ Facture générée</h3>
+            <p>Format Factur-X prêt</p>
+
+            <button className="btn" onClick={() => setStep(1)}>
+              Nouvelle facture
+            </button>
+          </div>
+
+          <div className="invoice">
+            <h2>🧾 FACTURE #INV-001</h2>
+            <p>Total : 19€</p>
+          </div>
+        </>
+      )}
+
+      {/* PRICING */}
+      <div className="pricing">
+
+        <div className="plan">
+          <h3>Gratuit</h3>
+          <div className="price">0€</div>
+
+          <button className="btn">
+            Commencer
+          </button>
+        </div>
+
+        <div className="plan pro">
+          <h3>Pro</h3>
+          <div className="price">19€</div>
+
+          <button className="btn" onClick={handleCheckout}>
+            Passer Pro
+          </button>
+        </div>
+
+      </div>
+    </>
   );
 }
