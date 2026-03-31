@@ -267,41 +267,69 @@ export default function Home() {
         )}
 
         {/* PRICING */}
-        <div className="pricing">
+      import { useCallback } from "react";
 
-          {/* FREE */}
-          <div className="plan">
-            <h3>Gratuit</h3>
-            <div className="price">0€</div>
+export default function Home() {
 
-            <p>
-              ✔ 10 factures / mois<br />
-              ✔ Export Factur-X<br />
-              ✔ Support standard
-            </p>
+  const handleCheckout = useCallback(async () => {
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+      });
 
-            <button className="btn" onClick={() => alert("Plan Gratuit activé")}>
-              Commencer
-            </button>
-          </div>
+      const data = await res.json();
 
-          {/* PRO */}
-          <div className="plan pro">
-            <h3>Pro</h3>
-            <div className="price">19€</div>
+      console.log("Stripe response:", data);
 
-            <p>
-              ✔ Factures illimitées<br />
-              ✔ IA avancée<br />
-              ✔ Export premium<br />
-              ✔ Support prioritaire
-            </p>
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Erreur Stripe : pas d'URL");
+      }
+    } catch (error) {
+      console.error("Stripe error:", error);
+      alert("Erreur lors du paiement");
+    }
+  }, []);
 
-           <button className="btn" onClick={handleCheckout}>
+  return (
+    <>
+      <div className="pricing">
+
+        {/* FREE */}
+        <div className="plan">
+          <h3>Gratuit</h3>
+          <div className="price">0€</div>
+
+          <p>
+            ✔ 10 factures / mois<br />
+            ✔ Export Factur-X<br />
+            ✔ Support standard
+          </p>
+
+          <button
+            className="btn"
+            onClick={() => alert("Plan Gratuit activé")}
+          >
+            Commencer
+          </button>
+        </div>
+
+        {/* PRO */}
+        <div className="plan pro">
+          <h3>Pro</h3>
+          <div className="price">19€</div>
+
+          <p>
+            ✔ Factures illimitées<br />
+            ✔ IA avancée<br />
+            ✔ Export premium<br />
+            ✔ Support prioritaire
+          </p>
+
+          <button className="btn" onClick={handleCheckout}>
             Passer Pro
-            </button>
-          </div>
-
+          </button>
         </div>
 
       </div>
