@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function Home() {
   const [step, setStep] = useState(0);
+  const [file, setFile] = useState(null);
 
   const handleCheckout = async () => {
     try {
@@ -70,6 +71,7 @@ export default function Home() {
           border-radius: 10px;
           cursor: pointer;
           font-weight: 600;
+          margin-top: 10px;
         }
 
         .pricing {
@@ -110,6 +112,14 @@ export default function Home() {
           font-weight: 800;
           margin: 10px 0;
         }
+
+        .card {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          margin-top: 20px;
+          border: 1px solid #eee;
+        }
       `}</style>
 
       <div className="container">
@@ -122,13 +132,65 @@ export default function Home() {
           <h1>Factur-X automatique</h1>
           <p>IA + génération PDF/A-3 + XML embarqué</p>
 
+          {/* ✅ BOUTON HERO */}
           <button className="btn" onClick={() => setStep(1)}>
-          Commencer
-        </button>
+            Commencer
+          </button>
         </div>
 
+        {/* ✅ STEP UPLOAD */}
+        {step === 1 && (
+          <div className="card">
+            <h3>📄 Upload facture</h3>
+
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+
+            <br />
+
+            <button
+              className="btn"
+              onClick={() => {
+                if (!file) {
+                  alert("Ajoute une facture");
+                  return;
+                }
+                setStep(2);
+              }}
+            >
+              Continuer
+            </button>
+          </div>
+        )}
+
+        {/* ✅ STEP IA */}
+        {step === 2 && (
+          <div className="card">
+            <h3>🔍 Analyse IA</h3>
+            <p>Facture en cours de conversion Factur-X...</p>
+
+            <button className="btn" onClick={() => setStep(3)}>
+              Générer
+            </button>
+          </div>
+        )}
+
+        {/* ✅ STEP RESULT */}
+        {step === 3 && (
+          <div className="card">
+            <h3>✅ Facture générée</h3>
+            <p>Format Factur-X prêt (PDF/A-3 + XML)</p>
+
+            <button className="btn" onClick={() => setStep(0)}>
+              Nouvelle facture
+            </button>
+          </div>
+        )}
+
+        {/* PRICING */}
         <div className="pricing">
-          {/* FREE */}
           <div className="plan">
             <h3>Gratuit</h3>
             <div className="price">0€</div>
@@ -139,12 +201,12 @@ export default function Home() {
               ✔ Support standard
             </p>
 
-            <button className="btn">
+            {/* ✅ FIX BOUTON GRATUIT */}
+            <button className="btn" onClick={() => setStep(1)}>
               Commencer
             </button>
           </div>
 
-          {/* PRO */}
           <div className="plan pro">
             <div className="popular">Populaire</div>
 
