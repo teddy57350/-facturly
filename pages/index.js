@@ -123,8 +123,8 @@ export default function Home() {
           <p>IA + génération PDF/A-3 + XML embarqué</p>
 
           <button className="btn" onClick={() => setStep(1)}>
-            🚀 Commencer
-          </button>
+          Commencer
+        </button>
         </div>
 
         <div className="pricing">
