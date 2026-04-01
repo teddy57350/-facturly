@@ -167,8 +167,10 @@ body::before {
   opacity: 0.05;
   pointer-events: none;
   z-index: 0;
-  
-  .container {
+}
+
+/* CONTENU AU-DESSUS */
+.container {
   position: relative;
   z-index: 1;
 }
