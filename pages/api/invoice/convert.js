@@ -1,4 +1,4 @@
-import formidable from "formidable";
+import { IncomingForm } from "formidable";
 import fs from "fs";
 import pdfParse from "pdf-parse";
 import Anthropic from "@anthropic-ai/sdk";
@@ -13,12 +13,14 @@ const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
 
+
+console.log("API KEY PRESENT ?", !!process.env.ANTHROPIC_API_KEY);
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const form = new formidable.IncomingForm();
+const form = new IncomingForm();
 
   form.parse(req, async (err, fields, files) => {
     try {
