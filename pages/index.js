@@ -59,11 +59,14 @@ const handleGenerate = async () => {
   }
 };
 
-const handleCheckout = async () => {
-  try {
-    const res = await fetch("/api/stripe/create-checkout-session", {
-      method: "POST",
-    });
+    const handleCheckout = async () => {
+  const res = await fetch("/api/stripe/create-checkout-session", {
+    method: "POST",
+  });
+
+  const data = await res.json();
+  window.location.href = data.url;
+};
 
     const data = await res.json();
 
