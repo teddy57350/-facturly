@@ -38,12 +38,7 @@ const handleGenerate = async () => {
       throw new Error(raw);
     }
 
-    let data;
-    try {
-      data = JSON.parse(raw);
-    } catch {
-      throw new Error(raw);
-    }
+    const data = JSON.parse(raw);
 
     let facture;
     try {
