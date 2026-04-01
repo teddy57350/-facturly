@@ -1,43 +1,33 @@
 import { PDFDocument, StandardFonts } from "pdf-lib";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ erreur: 'Méthode non autorisée' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const { facture } = req.body;
 
-    if (!facture) {
-      return res.status(400).json({ erreur: 'Données manquantes' });
-    }
-
-    // 🔥 PDF simple mais fonctionnel
     const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([600, 800]);
+    const page = pdfDoc.addPage([600, 400]);
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    page.drawText("FACTURE FACTUR-X", { x: 50, y: 750, size: 20, font });
-
-    page.drawText(`Client: ${facture.client || "N/A"}`, {
-      x: 50,
-      y: 700,
-      size: 12,
-      font,
-    });
-
-    page.drawText(`Total: ${facture.total || "N/A"} €`, {
-      x: 50,
-      y: 680,
-      size: 12,
-      font,
-    });
+    page.drawText("FACTURE FACTUR-X", { x: 50, y: 350, font });
+    page.drawText(`Invoice: ${facture?.invoiceNumber || "-"}`, { x: 50, y: 300, font });
+    page.drawText(`Total: ${facture?.total || 0} €`, { x: 50, y: 270, font });
 
     const pdfBytes = await pdfDoc.save();
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
+    res.setHeader("Content-Disposition", "attachment; filename=facture.pdf");
+
+    res.status(200).send(Buffer.from(pdfBytes));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "PDF error" });
+  }
+}
       "Content-Disposition",
       "attachment; filename=facture.pdf"
     );
