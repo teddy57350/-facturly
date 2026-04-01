@@ -105,7 +105,4 @@ ${text}
         error: error.message || "Erreur conversion facture",
       });
     }
-  });
-}
-  });
 }
