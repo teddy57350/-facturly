@@ -52,6 +52,7 @@ const handleGenerate = async () => {
 
     setFreeCount((prev) => prev + 1);
     setStep(3);
+
   } catch (err) {
     console.error(err);
     alert("Erreur génération facture");
