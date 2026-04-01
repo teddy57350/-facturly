@@ -1,5 +1,7 @@
 import Stripe from "stripe";
-import { supabase } from "../../../next/lib/supabase";
+import { supabase } from "../../../lib/supabase";
+
+export default async function handler(req, res) {
 
 export const config = {
   api: {
