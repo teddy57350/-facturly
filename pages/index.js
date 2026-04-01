@@ -18,7 +18,6 @@ const handleGenerate = async () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    // 1. Convert IA
     const res = await fetch("/api/invoice/convert", {
       method: "POST",
       body: formData,
@@ -33,7 +32,6 @@ const handleGenerate = async () => {
       facture = data.ai;
     }
 
-    // 2. Generate PDF
     const res2 = await fetch("/api/invoice/generate", {
       method: "POST",
       headers: {
@@ -54,11 +52,29 @@ const handleGenerate = async () => {
 
     setFreeCount((prev) => prev + 1);
     setStep(3);
-
   } catch (err) {
     console.error(err);
     alert("Erreur génération facture");
     setStep(0);
+  }
+};
+
+const handleCheckout = async () => {
+  try {
+    const res = await fetch("/api/stripe/create-checkout-session", {
+      method: "POST",
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Erreur Stripe");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Erreur paiement");
   }
 };
     // 2. PDF
@@ -133,9 +149,25 @@ const handleGenerate = async () => {
     console.error(err);
     alert("Erreur IA");
     setStep(1);
+
+    const handleCheckout = async () => {
+  try {
+    const res = await fetch("/api/stripe/create-checkout-session", {
+      method: "POST",
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Erreur Stripe");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Erreur paiement");
   }
 };
-
   return (
     <>
       <style jsx global>{`
