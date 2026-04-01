@@ -18,6 +18,7 @@ const handleGenerate = async () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    // 1. Convert IA
     const res = await fetch("/api/invoice/convert", {
       method: "POST",
       body: formData,
@@ -32,6 +33,7 @@ const handleGenerate = async () => {
       facture = data.ai;
     }
 
+    // 2. Generate PDF
     const res2 = await fetch("/api/invoice/generate", {
       method: "POST",
       headers: {
@@ -51,7 +53,7 @@ const handleGenerate = async () => {
     a.remove();
 
     setFreeCount((prev) => prev + 1);
-    setStep(0);
+    setStep(3);
 
   } catch (err) {
     console.error(err);
@@ -287,7 +289,7 @@ const handleGenerate = async () => {
             <h3>✅ Facture générée</h3>
             <p>Format Factur-X prêt</p>
 
-            <button className="btn" onClick={handleSaaSGenerate}>
+            <button className="btn" onClick={handleGenerate}>
            🚀 Générer ma facture
             </button>
           </div>
