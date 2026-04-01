@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { supabase } from "../lib/supabase";
 
 export default function Home() {
   const router = useRouter();
@@ -19,77 +18,77 @@ export default function Home() {
     setStep(1);
   };
 
- const handleGenerate = async () => {
-  if (!file) {
-    alert("Ajoute une facture");
-    return;
-  }
+  const handleGenerate = async () => {
+    if (!file) {
+      alert("Ajoute une facture");
+      return;
+    }
 
-  setStep(2);
+    setStep(2);
 
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/invoice/convert", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    let facture;
     try {
-      facture = JSON.parse(data.ai);
-    } catch {
-      facture = data.ai;
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/invoice/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      let facture;
+      try {
+        facture = JSON.parse(data.ai);
+      } catch {
+        facture = data.ai;
+      }
+
+      const res2 = await fetch("/api/invoice/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ facture }),
+      });
+
+      const blob = await res2.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "facture_facturx.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setFreeCount((prev) => prev + 1);
+      setStep(3);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur génération facture");
+      setStep(0);
     }
+  };
 
-    const res2 = await fetch("/api/invoice/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ facture }),
-    });
+  const handleCheckout = async () => {
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+      });
 
-    const blob = await res2.blob();
+      const data = await res.json();
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "facture_facturx.pdf";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
-    setFreeCount((prev) => prev + 1);
-    setStep(3);
-  } catch (err) {
-    console.error(err);
-    alert("Erreur génération facture");
-    setStep(0);
-  }
-};
-
-const handleCheckout = async () => {
-  try {
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-    });
-
-    const data = await res.json();
-
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Erreur Stripe");
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Erreur Stripe");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur paiement");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Erreur paiement");
-  }
-};
+  };
 
   return (
     <>
@@ -101,17 +100,11 @@ const handleCheckout = async () => {
           min-height: 100vh;
         }
 
-        .container {
-          max-width: 1000px;
-          margin: auto;
-          padding: 2rem;
-        }
-
         header {
           display: flex;
           justify-content: space-between;
           padding: 1rem 2rem;
-          background: rgba(255,255,255,0.7);
+          background: rgba(255, 255, 255, 0.7);
           backdrop-filter: blur(12px);
           border-radius: 14px;
           border: 1px solid #e5e7eb;
@@ -146,34 +139,62 @@ const handleCheckout = async () => {
         }
 
         .card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 14px;
-  margin-top: 20px;
-  border: 1px solid #eee;
-}
+          background: white;
+          padding: 1.5rem;
+          border-radius: 14px;
+          margin-top: 20px;
+          border: 1px solid #eee;
+        }
 
-/* FILIGRANE */
-body::before {
-  content: "";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  height: 500px;
-  transform: translate(-50%, -50%);
-  background: url("/watermark.png") no-repeat center;
-  background-size: contain;
-  opacity: 0.05;
-  pointer-events: none;
-  z-index: 0;
-}
+        .pricing {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          margin-top: 3rem;
+        }
 
-/* CONTENU AU-DESSUS */
-.container {
-  position: relative;
-  z-index: 1;
-}
+        .plan {
+          width: 280px;
+          padding: 2rem;
+          border-radius: 16px;
+          background: white;
+          border: 1px solid #e5e7eb;
+          text-align: center;
+        }
+
+        .plan.pro {
+          background: linear-gradient(135deg, #111827, #1f2937);
+          color: white;
+        }
+
+        .price {
+          font-size: 34px;
+          font-weight: 800;
+          margin: 10px 0;
+        }
+
+        body::before {
+          content: "";
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          width: 500px;
+          height: 500px;
+          transform: translate(-50%, -50%);
+          background: url("/watermark.png") no-repeat center;
+          background-size: contain;
+          opacity: 0.05;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .container {
+          max-width: 1000px;
+          margin: auto;
+          padding: 2rem;
+          position: relative;
+          z-index: 1;
+        }
       `}</style>
 
       <div className="container">
@@ -223,6 +244,7 @@ body::before {
         <div className="pricing">
           <div className="plan">
             <h3>Gratuit</h3>
+            <div className="price">0€</div>
             <p>10 factures</p>
             <button className="btn" onClick={handleFreeStart}>
               Start
@@ -231,7 +253,7 @@ body::before {
 
           <div className="plan pro">
             <h3>Pro</h3>
-            <p>19€/mois</p>
+            <div className="price">19€/mois</div>
             <button className="btn" onClick={handleCheckout}>
               Passer Pro
             </button>
@@ -239,5 +261,7 @@ body::before {
         </div>
       </div>
     </>
+  );
+}
   );
 }
