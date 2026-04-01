@@ -2,6 +2,7 @@ import { IncomingForm } from "formidable";
 import fs from "fs";
 import pdfParse from "pdf-parse";
 import Anthropic from "@anthropic-ai/sdk";
+import Tesseract from "tesseract.js";
 
 export const config = {
   api: {
@@ -36,17 +37,26 @@ export default async function handler(req, res) {
       const buffer = fs.readFileSync(uploadedFile.filepath);
 
       let text = "";
+
       try {
         const pdf = await pdfParse(buffer);
         text = (pdf.text || "").trim();
       } catch (parseError) {
         console.error("pdf-parse error:", parseError);
-        return res.status(500).json({ error: "Erreur lecture PDF" });
+      }
+
+      if (!text || text.length < 20) {
+        try {
+          const ocrResult = await Tesseract.recognize(uploadedFile.filepath, "eng");
+          text = (ocrResult.data.text || "").trim();
+        } catch (ocrError) {
+          console.error("OCR error:", ocrError);
+        }
       }
 
       if (!text || text.length < 20) {
         return res.status(400).json({
-          error: "Le PDF ne contient pas assez de texte lisible.",
+          error: "Le PDF ne contient pas assez de texte lisible, même après OCR.",
         });
       }
 
