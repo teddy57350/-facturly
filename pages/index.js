@@ -336,7 +336,16 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-           <a href="/api/checkout" className="plan-btn pro" style={{display:'block', textAlign:'center', textDecoration:'none'}}>Passer au Pro</a>
+          <button
+  className="plan-btn pro"
+  onClick={async () => {
+    const res = await fetch("/api/checkout", { method: "POST" });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  }}
+>
+  Passer au Pro
+</button>
           </div>
         </div>
       </div>
