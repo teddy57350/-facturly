@@ -1,4 +1,5 @@
 // pages/pricing.js
+// pages/pricing.js
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
