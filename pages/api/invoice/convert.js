@@ -1,8 +1,7 @@
 import { IncomingForm } from "formidable";
 import fs from "fs";
 import pdfParse from "pdf-parse";
-import Anthropic from "@anthropic-ai/sdk";
-import Tesseract from "tesseract.js";
+import OpenAI from "openai";
 
 export const config = {
   api: {
@@ -10,9 +9,9 @@ export const config = {
   },
 };
 
-const anthropic = process.env.ANTHROPIC_API_KEY
-  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-  : null;
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -24,7 +23,6 @@ export default async function handler(req, res) {
   form.parse(req, async (err, fields, files) => {
     try {
       if (err) {
-        console.error("Formidable error:", err);
         return res.status(500).json({ error: "Upload error" });
       }
 
@@ -36,46 +34,24 @@ export default async function handler(req, res) {
 
       const buffer = fs.readFileSync(uploadedFile.filepath);
 
-      let text = "";
-
-      try {
-        const pdf = await pdfParse(buffer);
-        text = (pdf.text || "").trim();
-      } catch (parseError) {
-        console.error("pdf-parse error:", parseError);
-      }
-
-      if (!text || text.length < 20) {
-        try {
-          const ocrResult = await Tesseract.recognize(uploadedFile.filepath, "eng");
-          text = (ocrResult.data.text || "").trim();
-        } catch (ocrError) {
-          console.error("OCR error:", ocrError);
-        }
-      }
+      const pdf = await pdfParse(buffer);
+      const text = (pdf.text || "").trim();
 
       if (!text || text.length < 20) {
         return res.status(400).json({
-          error: "Le PDF ne contient pas assez de texte lisible, même après OCR.",
+          error: "PDF non lisible (scan non géré)",
         });
       }
 
-      if (!anthropic) {
-        return res.status(500).json({
-          error: "ANTHROPIC_API_KEY manquante sur le serveur",
-        });
-      }
-
-      const response = await anthropic.messages.create({
-        model: "claude-3-sonnet-20240229",
-        max_tokens: 1200,
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "user",
             content: `
 Analyse cette facture et retourne UNIQUEMENT un JSON valide.
 
-Format attendu :
+Format :
 {
   "invoiceNumber": "",
   "client": "",
@@ -91,19 +67,12 @@ ${text}
         ],
       });
 
-      const raw = response.content?.[0]?.text?.trim() || "";
-
-      const cleaned = raw
-        .replace(/^```json\s*/i, "")
-        .replace(/^```\s*/i, "")
-        .replace(/\s*```$/i, "")
-        .trim();
+      const raw = completion.choices[0].message.content.trim();
 
       let facture;
       try {
-        facture = JSON.parse(cleaned);
-      } catch (jsonError) {
-        console.error("JSON parse IA error:", cleaned);
+        facture = JSON.parse(raw);
+      } catch {
         return res.status(500).json({
           error: "Réponse IA invalide",
         });
@@ -113,7 +82,7 @@ ${text}
         ai: JSON.stringify(facture),
       });
     } catch (error) {
-      console.error("Erreur /api/invoice/convert:", error);
+      console.error(error);
       return res.status(500).json({
         error: error.message || "Erreur conversion facture",
       });
