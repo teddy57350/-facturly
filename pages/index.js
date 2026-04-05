@@ -336,7 +336,7 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-            <button className="plan-btn pro">Passer au Pro</button>
+           <a href="/api/checkout" className="plan-btn pro" style={{display:'block', textAlign:'center', textDecoration:'none'}}>Passer au Pro</a>
           </div>
         </div>
       </div>
