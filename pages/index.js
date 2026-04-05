@@ -101,7 +101,6 @@ export default function Home() {
         .counter-bar { background: #fff; border: 1px solid #e8ecf0; border-radius: 10px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
         .counter-label { font-size: 13px; color: #64748b; }
         .counter-value { font-size: 13px; font-weight: 600; color: #2563eb; }
-        .counter-bar progress { width: 100px; height: 6px; border-radius: 3px; }
 
         .card { background: #fff; border: 1px solid #e8ecf0; border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; }
         .card h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 1rem; }
@@ -184,7 +183,7 @@ export default function Home() {
 
       {/* TOPBAR */}
       <div className="topbar">
-        <div className="logo">Factur<span>ly</span></div>
+        <div className="logo">Factur<span>AI</span></div>
         <div className="badge-top">EN 16931 CONFORME</div>
       </div>
 
@@ -195,9 +194,9 @@ export default function Home() {
 
       {/* HERO */}
       <div className="hero">
-        <div className="hero-badge">Nouveau — Propulsé par IA</div>
+        <div className="hero-badge">Propulsé par IA</div>
         <h1>Transformez vos factures<br />en <span>Factur-X</span> en 30 secondes</h1>
-        <p>Facturly transforme vos factures Word ou PDF en format légal Factur-X automatiquement. Zéro comptable. Zéro prise de tête.</p>
+        <p>FacturAI transforme vos factures Word ou PDF en format légal Factur-X automatiquement. Zéro comptable. Zéro prise de tête.</p>
         <div className="hero-actions">
           <button className="btn-hero btn-primary" onClick={handleFreeStart}>Essayer gratuitement</button>
           <button className="btn-hero btn-outline" onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}>Voir les tarifs</button>
@@ -312,7 +311,7 @@ export default function Home() {
           <div className="plan-card">
             <div className="plan-name">Gratuit</div>
             <div className="plan-price">0€ <span>/ mois</span></div>
-            <div className="plan-desc">Pour tester Facturly</div>
+            <div className="plan-desc">Pour tester FacturAI</div>
             <ul className="plan-features">
               <li>10 factures par mois</li>
               <li>Extraction automatique IA</li>
@@ -349,7 +348,7 @@ export default function Home() {
           <div className="section-title">Questions fréquentes</div>
           <div className="faq-item">
             <div className="faq-q">Est-ce vraiment conforme à la réglementation française ?</div>
-            <div className="faq-a">Oui. Facturly génère des fichiers conformes à la norme EN 16931 et au format Factur-X, le standard retenu par la France pour la facturation électronique obligatoire dès 2026-2027.</div>
+            <div className="faq-a">Oui. FacturAI génère des fichiers conformes à la norme EN 16931 et au format Factur-X, le standard retenu par la France pour la facturation électronique obligatoire dès 2026-2027.</div>
           </div>
           <div className="faq-item">
             <div className="faq-q">Mes données sont-elles sécurisées ?</div>
@@ -361,14 +360,14 @@ export default function Home() {
           </div>
           <div className="faq-item">
             <div className="faq-q">J'utilise déjà un logiciel de facturation — est-ce utile ?</div>
-            <div className="faq-a">Oui. Si votre logiciel ne génère pas encore de Factur-X, Facturly vous permet de convertir vos exports PDF en quelques secondes sans changer vos habitudes.</div>
+            <div className="faq-a">Oui. Si votre logiciel ne génère pas encore de Factur-X, FacturAI vous permet de convertir vos exports PDF en quelques secondes sans changer vos habitudes.</div>
           </div>
         </div>
       </div>
 
       {/* FOOTER */}
       <div className="footer">
-        <p>© 2026 Facturly — <a href="/mentions-legales">Mentions légales</a> <a href="/confidentialite">Confidentialité</a> <a href="/cgu">CGU</a></p>
+        <p>© 2026 FacturAI — <a href="/mentions-legales">Mentions légales</a> <a href="/confidentialite">Confidentialité</a> <a href="/cgu">CGU</a></p>
       </div>
     </>
   );
