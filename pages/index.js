@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Head from "next/head";
 
 const FREE_LIMIT = 10;
 
@@ -91,7 +92,10 @@ export default function Home() {
         body: JSON.stringify({ facture }),
       });
 
-      if (!res2.ok) { const raw2 = await res2.text(); throw new Error(raw2); }
+      if (!res2.ok) {
+        const raw2 = await res2.text();
+        throw new Error(raw2);
+      }
 
       const blob = await res2.blob();
       const url = window.URL.createObjectURL(blob);
@@ -112,7 +116,7 @@ export default function Home() {
     }
   };
 
- const handleDrop = (e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
     const dropped = e.dataTransfer.files[0];
@@ -121,6 +125,9 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <meta name="google-site-verification" content="H4bc4o9XwYrLm4bn7hxv267mYvCKSgN208" />
+      </Head>
     
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
