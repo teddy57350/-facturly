@@ -122,7 +122,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <meta name="google-site-verification" content="XXXX" />
+        <meta name="google-site-verification=H4bc4o9XwYrLm4bn7hxv267mYvCKSgN208GZxO96Hgw" content="XXXX" />
       </Head>
     
       <style>{`
