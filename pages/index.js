@@ -112,7 +112,7 @@ export default function Home() {
     }
   };
 
-  const handleDrop = (e) => {
+ const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
     const dropped = e.dataTransfer.files[0];
@@ -121,6 +121,10 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <meta name="google-site-verification" content="XXXX" />
+      </Head>
+    
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a2e; }
