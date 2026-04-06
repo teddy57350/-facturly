@@ -1,28 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const FREE_LIMIT = 10;
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
   const [file, setFile] = useState(null);
   const [step, setStep] = useState(0);
   const [freeCount, setFreeCount] = useState(0);
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   const handleFreeStart = () => {
     if (freeCount >= FREE_LIMIT) {
       alert("Limite gratuite atteinte (10 factures). Passez en Pro pour continuer.");
       return;
     }
+
     setStep(1);
     setError("");
+
+    setTimeout(() => {
+      const el = document.getElementById("upload");
+      if (el) {
+        const yOffset = -80;
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const handleGenerate = async () => {
@@ -188,7 +191,7 @@ export default function Home() {
         .footer a:hover { color: #fff; }
       `}</style>
 
-       {/* TOPBAR */}
+      {/* TOPBAR */}
       <div className="topbar">
         <div className="logo">Factur<span>AI</span></div>
         <div className="badge-top">EN 16931 CONFORME</div>
