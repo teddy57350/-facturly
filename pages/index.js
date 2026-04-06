@@ -188,7 +188,7 @@ export default function Home() {
         .footer a:hover { color: #fff; }
       `}</style>
 
-      {/* TOPBAR */}
+       {/* TOPBAR */}
       <div className="topbar">
         <div className="logo">Factur<span>AI</span></div>
         <div className="badge-top">EN 16931 CONFORME</div>
@@ -211,7 +211,7 @@ export default function Home() {
       </div>
 
       {/* APP */}
-      <div className="main">
+      <div className="main" id="upload">
         <div className="counter-bar">
           <span className="counter-label">Factures gratuites utilisées</span>
           <span className="counter-value" suppressHydrationWarning>{freeCount} / {FREE_LIMIT}</span>
@@ -326,16 +326,19 @@ export default function Home() {
               <li>Conforme EN 16931</li>
               <li>Support par email</li>
             </ul>
-    <button
-  className="plan-btn"
-  onClick={() => {
-    document.getElementById("upload")?.scrollIntoView({
-      behavior: "smooth",
-    });
-  }}
->
-  Commencer gratuitement
-</button>
+            <button
+              className="plan-btn"
+              onClick={() => {
+                const el = document.getElementById("upload");
+                if (el) {
+                  const yOffset = -80;
+                  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                  window.scrollTo({ top: y, behavior: "smooth" });
+                }
+              }}
+            >
+              Commencer gratuitement
+            </button>
           </div>
 
           <div className="plan-card popular">
@@ -352,22 +355,22 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-           <button
-  type="button"
-  className="plan-btn pro"
-  onClick={async () => {
-    const res = await fetch("/api/stripe/checkout", { method: "POST" });
-    const data = await res.json();
+            <button
+              type="button"
+              className="plan-btn pro"
+              onClick={async () => {
+                const res = await fetch("/api/stripe/checkout", { method: "POST" });
+                const data = await res.json();
 
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Erreur Stripe");
-    }
-  }}
->
-  Passer au Pro
-</button>
+                if (data.url) {
+                  window.location.href = data.url;
+                } else {
+                  alert("Erreur Stripe");
+                }
+              }}
+            >
+              Passer au Pro
+            </button>
           </div>
         </div>
       </div>
