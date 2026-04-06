@@ -8,25 +8,41 @@ export const config = {
   },
 };
 
+async function readBuffer(req) {
+  return await new Promise((resolve, reject) => {
+    const chunks = [];
+
+    req.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+
+    req.on("end", () => {
+      resolve(Buffer.concat(chunks));
+    });
+
+    req.on("error", reject);
+  });
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).end();
   }
 
-  const sig = req.headers["stripe-signature"];
+  const signature = req.headers["stripe-signature"];
+
+  if (!signature) {
+    return res.status(400).send("Missing stripe-signature header");
+  }
 
   let event;
 
   try {
-    const buf = await new Promise((resolve) => {
-      let data = "";
-      req.on("data", (chunk) => (data += chunk));
-      req.on("end", () => resolve(Buffer.from(data)));
-    });
+    const buf = await readBuffer(req);
 
     event = stripe.webhooks.constructEvent(
       buf,
-      sig,
+      signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
@@ -34,20 +50,47 @@ export default async function handler(req, res) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // 🎯 ICI C'EST IMPORTANT
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
 
-    console.log("PAIEMENT OK:", session);
+      const email =
+        session.customer_details?.email ||
+        session.customer_email ||
+        null;
 
-    const email = session.customer_details?.email;
+      console.log("PAIEMENT OK:", session.id);
+      console.log("EMAIL:", email);
 
-    console.log("EMAIL:", email);
+      // =========================
+      // ICI TU AJOUTERAS TA LOGIQUE PRO
+      // =========================
+      //
+      // Exemple plus tard avec base de données :
+      //
+      // if (email) {
+      //   await db.user.upsert({
+      //     where: { email },
+      //     update: {
+      //       isPro: true,
+      //       plan: "pro",
+      //       stripeCustomerId: session.customer || null,
+      //       stripeSubscriptionId: session.subscription || null,
+      //     },
+      //     create: {
+      //       email,
+      //       isPro: true,
+      //       plan: "pro",
+      //       stripeCustomerId: session.customer || null,
+      //       stripeSubscriptionId: session.subscription || null,
+      //     },
+      //   });
+      // }
+    }
 
-    // 👉 Ici tu actives le compte pro
-    // exemple :
-    // await db.user.update({ where: { email }, data: { isPro: true } });
+    return res.status(200).json({ received: true });
+  } catch (err) {
+    console.error("Webhook handler error:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(200).json({ received: true });
 }
