@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       mode: "subscription",
       line_items: [
         {
-          price: "price_1TGzLJLcn25N5LCHtJGUeLa4",
+          price: "price_1TIrKOLcn25N5LCHbvQ3qGvj",
           quantity: 1,
         },
       ],
