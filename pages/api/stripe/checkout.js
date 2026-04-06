@@ -21,12 +21,7 @@ export default async function handler(req, res) {
     });
 
     return res.status(200).json({ url: session.url });
-  } catch (error) {
-    console.error("STRIPE ERROR FULL:", error);
-    return res.status(500).json({
-      error: error?.message || "Erreur Stripe",
-      type: error?.type || null,
-      code: error?.code || null,
-    });
-  }
+ } catch (error) {
+  console.error("STRIPE ERROR FULL:", error);
+  return res.status(500).json({ error: "Erreur Stripe" });
 }
