@@ -336,12 +336,12 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-          <button
+      <button
+  type="button"
   className="plan-btn pro"
-  onClick={async () => {
-    const res = await fetch("/api/checkout", { method: "POST" });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
+  onClick={() => {
+    alert("clic ok");
+    console.log("clic ok");
   }}
 >
   Passer au Pro
