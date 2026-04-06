@@ -336,20 +336,13 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-     <button
+ <button
   type="button"
   className="plan-btn pro"
   onClick={async () => {
-    try {
-      const res = await fetch("/api/checkout", { method: "POST" });
-      const text = await res.text();
-      console.log("STATUS:", res.status);
-      console.log("RESPONSE:", text);
-      alert("status: " + res.status);
-    } catch (e) {
-      console.error(e);
-      alert("erreur front");
-    }
+    const res = await fetch("/api/stripe/checkout", { method: "POST" });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
   }}
 >
   Passer au Pro
