@@ -19,10 +19,3 @@ export default async function handler(req, res) {
       success_url: `${process.env.NEXT_PUBLIC_URL}/?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/?canceled=true`,
     });
-
-    return res.status(200).json({ url: session.url });
-  } catch (error) {
-    console.error("STRIPE ERROR FULL:", error);
-    return res.status(500).json({ error: "Erreur Stripe" });
-  }
-}
