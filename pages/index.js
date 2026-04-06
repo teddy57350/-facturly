@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const FREE_LIMIT = 10;
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const [file, setFile] = useState(null);
   const [step, setStep] = useState(0);
   const [freeCount, setFreeCount] = useState(0);
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const handleFreeStart = () => {
-<span suppressHydrationWarning>
-  {freeCount} / {FREE_LIMIT}
-</span> 
-  
+    if (freeCount >= FREE_LIMIT) {
       alert("Limite gratuite atteinte (10 factures). Passez en Pro pour continuer.");
       return;
     }
@@ -210,7 +214,7 @@ export default function Home() {
       <div className="main">
         <div className="counter-bar">
           <span className="counter-label">Factures gratuites utilisées</span>
-          <span className="counter-value">{freeCount} / {FREE_LIMIT}</span>
+          <span className="counter-value" suppressHydrationWarning>{freeCount} / {FREE_LIMIT}</span>
         </div>
 
         {error && <div className="error-box">{error}</div>}
@@ -339,22 +343,7 @@ export default function Home() {
               <li>Historique complet</li>
               <li>Accès API</li>
             </ul>
-<button
-  type="button"
-  className="plan-btn pro"
-  onClick={async () => {
-    const res = await fetch("/api/stripe/checkout", { method: "POST" });
-    const data = await res.json();
-
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert(data.error); // ← IMPORTANT
-    }
-  }}
->
-  Passer au Pro
-</button>
+            <button className="plan-btn pro">Passer au Pro</button>
           </div>
         </div>
       </div>
@@ -389,4 +378,5 @@ export default function Home() {
       </div>
     </>
   );
+}
 }
