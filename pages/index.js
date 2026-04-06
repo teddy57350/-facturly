@@ -342,8 +342,12 @@ export default function Home() {
   onClick={async () => {
     const res = await fetch("/api/stripe/checkout", { method: "POST" });
     const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else alert(data.error || "Erreur paiement");
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.error); // ← IMPORTANT
+    }
   }}
 >
   Passer au Pro
