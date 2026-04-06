@@ -326,11 +326,19 @@ export default function Home() {
               <li>Conforme EN 16931</li>
               <li>Support par email</li>
             </ul>
-            <a href="#upload">
-  <button className="btn">
-    Commencer gratuitement
-  </button>
-</a>
+     <button
+  className="btn"
+  onClick={() => {
+    const el = document.getElementById("upload");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.error("ID upload introuvable");
+    }
+  }}
+>
+  Commencer gratuitement
+</button>
           </div>
 
           <div className="plan-card popular">
