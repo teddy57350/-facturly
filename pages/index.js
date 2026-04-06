@@ -121,9 +121,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <meta name="google-site-verification" content="H4bc4o9XwYrLm4bn7hxv267mYvCKSgN208" />
-      </Head>
     
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
