@@ -10,7 +10,9 @@ export default function Home() {
   const [dragging, setDragging] = useState(false);
 
   const handleFreeStart = () => {
-    if (freeCount >= FREE_LIMIT) {
+<span suppressHydrationWarning>
+  {freeCount} / {FREE_LIMIT}
+</span> {
       alert("Limite gratuite atteinte (10 factures). Passez en Pro pour continuer.");
       return;
     }
