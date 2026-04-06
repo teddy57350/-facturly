@@ -340,9 +340,27 @@ export default function Home() {
   type="button"
   className="plan-btn pro"
   onClick={async () => {
-    const res = await fetch("/api/stripe/checkout", { method: "POST" });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
+    alert("clic");
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      alert("status: " + res.status);
+
+      const text = await res.text();
+      console.log(text);
+      alert(text);
+
+      const data = JSON.parse(text);
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (e) {
+      console.error(e);
+      alert("erreur: " + e.message);
+    }
   }}
 >
   Passer au Pro
