@@ -467,6 +467,24 @@ export default function Home() {
             >
               Passer au Pro
             </button>
+                <button
+  type="button"
+  className="plan-btn"
+  style={{ marginTop: "8px", fontSize: "13px" }}
+  onClick={async () => {
+    const savedEmail = localStorage.getItem("facturai_email");
+    const res = await fetch("/api/stripe/portal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: savedEmail }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert("Erreur : " + data.error);
+  }}
+>
+  Gérer mon abonnement
+</button>
           </div>
         </div>
       </div>
