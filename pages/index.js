@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import { createClient } from "@supabase/supabase-js";
- 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
- 
-export const supabase = createClient(supabaseUrl, supabaseKey);
 
 const FREE_LIMIT = 10;
 
@@ -23,23 +17,46 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     const savedEmail = localStorage.getItem("facturai_email");
-    const savedCount = parseInt(localStorage.getItem("facturai_count") || "0");
     if (savedEmail) {
       setEmail(savedEmail);
       setEmailConfirmed(true);
-      setFreeCount(savedCount);
+      // Récupère le vrai compteur depuis Supabase
+      fetch("/api/user/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: savedEmail }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.count !== undefined) setFreeCount(data.count);
+        });
     }
   }, []);
 
   if (!mounted) return null;
 
-  const handleEmailSubmit = () => {
+  const handleEmailSubmit = async () => {
     if (!email || !email.includes("@")) {
       alert("Veuillez entrer un email valide.");
       return;
     }
+
+    // Vérifie dans Supabase
+    const res = await fetch("/api/user/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+
+    if (!data.allowed) {
+      setShowEmailModal(false);
+      alert("Limite gratuite atteinte pour cet email. Passez en Pro pour continuer.");
+      return;
+    }
+
     localStorage.setItem("facturai_email", email);
-    localStorage.setItem("facturai_count", "0");
+    setFreeCount(data.count);
     setEmailConfirmed(true);
     setShowEmailModal(false);
     setStep(1);
@@ -53,15 +70,26 @@ export default function Home() {
     }, 100);
   };
 
-  const handleFreeStart = () => {
+  const handleFreeStart = async () => {
     if (!emailConfirmed) {
       setShowEmailModal(true);
       return;
     }
-    if (freeCount >= FREE_LIMIT) {
+
+    // Vérifie la limite dans Supabase
+    const res = await fetch("/api/user/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+
+    if (!data.allowed) {
       alert("Limite gratuite atteinte (10 factures). Passez en Pro pour continuer.");
       return;
     }
+
+    setFreeCount(data.count);
     setStep(1);
     setError("");
     setTimeout(() => {
@@ -98,10 +126,7 @@ export default function Home() {
         body: JSON.stringify({ facture }),
       });
 
-      if (!res2.ok) {
-        const raw2 = await res2.text();
-        throw new Error(raw2);
-      }
+      if (!res2.ok) { const raw2 = await res2.text(); throw new Error(raw2); }
 
       const blob = await res2.blob();
       const url = window.URL.createObjectURL(blob);
@@ -112,9 +137,15 @@ export default function Home() {
       a.click();
       a.remove();
 
-      const newCount = freeCount + 1;
-      setFreeCount(newCount);
-      localStorage.setItem("facturai_count", newCount.toString());
+      // Incrémente dans Supabase
+      const incRes = await fetch("/api/user/increment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const incData = await incRes.json();
+      if (incData.count !== undefined) setFreeCount(incData.count);
+
       setStep(3);
     } catch (err) {
       setError("Erreur : " + err.message);
@@ -132,18 +163,17 @@ export default function Home() {
   return (
     <>
       <Head>
-        <meta name="google-site-verification" content="-Hbv1O_v7TAf1eaoozUBwM8pgLW_7QJGlo-5AUmELyA" />
+        <title>FacturAI — Convertissez vos factures en Factur-X</title>
+        <meta name="description" content="FacturAI transforme vos factures Word ou PDF en format légal Factur-X automatiquement. Zéro comptable. Zéro prise de tête." />
       </Head>
-    
+
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a2e; }
-
         .topbar { background: #fff; border-bottom: 1px solid #e8ecf0; padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
         .logo { font-size: 20px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.5px; }
         .logo span { color: #2563eb; }
         .badge-top { background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; }
-
         .hero { background: #fff; border-bottom: 1px solid #e8ecf0; padding: 4rem 2rem 3rem; text-align: center; }
         .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
         .hero h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: #1a1a2e; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
@@ -155,20 +185,15 @@ export default function Home() {
         .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
         .btn-outline { background: transparent; color: #2563eb; border: 2px solid #2563eb; }
         .btn-outline:hover { background: #eff6ff; }
-
         .urgency { background: #fef2f2; border: 1px solid #fecaca; padding: 1rem 2rem; text-align: center; }
         .urgency p { font-size: 14px; color: #991b1b; font-weight: 500; }
         .urgency strong { font-weight: 700; }
-
         .main { max-width: 680px; margin: 0 auto; padding: 2.5rem 1rem; }
-
         .counter-bar { background: #fff; border: 1px solid #e8ecf0; border-radius: 10px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
         .counter-label { font-size: 13px; color: #64748b; }
         .counter-value { font-size: 13px; font-weight: 600; color: #2563eb; }
-
         .card { background: #fff; border: 1px solid #e8ecf0; border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; }
         .card h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 1rem; }
-
         .upload-zone { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: all 0.15s; background: #f8fafc; }
         .upload-zone.dragging { border-color: #2563eb; background: #eff6ff; }
         .upload-zone:hover { border-color: #94a3b8; }
@@ -177,21 +202,17 @@ export default function Home() {
         .upload-zone p { font-size: 13px; color: #94a3b8; margin-bottom: 12px; }
         .file-formats { display: flex; gap: 6px; justify-content: center; }
         .fmt { background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
-
         .file-selected { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-top: 12px; }
         .file-name { font-size: 13px; font-weight: 600; color: #166534; flex: 1; }
         .file-remove { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; }
-
         .btn-generate { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 1rem; transition: all 0.15s; }
         .btn-generate:hover { background: #1d4ed8; }
         .btn-generate:disabled { background: #94a3b8; cursor: not-allowed; }
-
         .loading-card { text-align: center; padding: 3rem 2rem; }
         .spinner { width: 44px; height: 44px; border: 3px solid #e8ecf0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-card h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
         .loading-card p { font-size: 14px; color: #64748b; }
-
         .success-card { text-align: center; padding: 2.5rem 2rem; }
         .success-icon { width: 60px; height: 60px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 26px; }
         .success-card h3 { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
@@ -201,9 +222,7 @@ export default function Home() {
         .badge-green { background: #f0fdf4; color: #166534; }
         .badge-blue { background: #eff6ff; color: #1d4ed8; }
         .btn-again { padding: 12px 24px; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
-
         .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px 16px; margin-bottom: 1rem; font-size: 13px; color: #991b1b; }
-
         .how { padding: 3rem 2rem; background: #fff; border-top: 1px solid #e8ecf0; border-bottom: 1px solid #e8ecf0; }
         .how-inner { max-width: 680px; margin: 0 auto; }
         .section-label { font-size: 12px; font-weight: 700; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
@@ -213,7 +232,6 @@ export default function Home() {
         .step-num { width: 40px; height: 40px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #2563eb; margin: 0 auto 10px; }
         .step-item h4 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
         .step-item p { font-size: 13px; color: #64748b; line-height: 1.5; }
-
         .pricing-section { max-width: 680px; margin: 0 auto; padding: 3rem 1rem; }
         .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         @media (max-width: 540px) { .pricing-grid { grid-template-columns: 1fr; } }
@@ -231,18 +249,15 @@ export default function Home() {
         .plan-btn:hover { background: #e2e8f0; }
         .plan-btn.pro { background: #2563eb; color: #fff; border: none; }
         .plan-btn.pro:hover { background: #1d4ed8; }
-
         .faq { background: #fff; border-top: 1px solid #e8ecf0; padding: 3rem 2rem; }
         .faq-inner { max-width: 680px; margin: 0 auto; }
         .faq-item { border-bottom: 1px solid #e8ecf0; padding: 1.25rem 0; }
         .faq-item:last-child { border-bottom: none; }
         .faq-q { font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 6px; }
         .faq-a { font-size: 14px; color: #64748b; line-height: 1.6; }
-
         .footer { background: #1a1a2e; color: #94a3b8; text-align: center; padding: 1.5rem; font-size: 13px; }
         .footer a { color: #94a3b8; text-decoration: none; margin: 0 8px; }
         .footer a:hover { color: #fff; }
-
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
         .modal-box { background: #fff; border-radius: 14px; padding: 2rem; max-width: 420px; width: 100%; }
         .modal-box h3 { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
@@ -251,8 +266,6 @@ export default function Home() {
         .modal-input:focus { border-color: #2563eb; }
         .modal-btn { width: 100%; padding: 13px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
         .modal-cancel { width: 100%; padding: 10px; background: transparent; color: #94a3b8; border: none; font-size: 13px; cursor: pointer; font-family: inherit; }
-
-        .email-info { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 8px; }
       `}</style>
 
       {/* MODAL EMAIL */}
