@@ -6,7 +6,7 @@ export default function MentionsLegales() {
 
       <h2 style={{ fontSize: '18px', fontWeight: '700', marginTop: '2rem', marginBottom: '0.5rem' }}>Éditeur du site</h2>
       <p>FacturAI est un service édité par Teddy LALLEMAND, entrepreneur individuel.</p>
-      <p>Contact : <a href="mailto:lallemandteddy@yahoo.fr" style={{ color: '#2563eb' }}>lallemandteddy@yahoo.fr</a></p>
+      <p>Contact : <a href="mailto:lallemandteddy@yahoo.fr" style={{ color: '#2563eb' }}>contact@facturai-x.fr</a></p>
 
       <h2 style={{ fontSize: '18px', fontWeight: '700', marginTop: '2rem', marginBottom: '0.5rem' }}>Hébergement</h2>
       <p>Ce site est hébergé par Vercel Inc., 340 Pine Street, Suite 700, San Francisco, CA 94104, États-Unis.</p>
