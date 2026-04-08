@@ -26,7 +26,7 @@ export default function Confidentialite() {
       </ul>
 
       <h2 style={{ fontSize: '18px', fontWeight: '700', marginTop: '2rem', marginBottom: '0.5rem' }}>Vos droits</h2>
-      <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement et de portabilité de vos données. Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@facturai-x.fr" style={{ color: '#2563eb' }}>lallemandteddy@yahoo.fr</a></p>
+      <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement et de portabilité de vos données. Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@facturai-x.fr" style={{ color: '#2563eb' }}>contact@facturai-x.fr</a></p>
 
       <h2 style={{ fontSize: '18px', fontWeight: '700', marginTop: '2rem', marginBottom: '0.5rem' }}>Cookies</h2>
       <p>FacturAI n'utilise pas de cookies publicitaires. Seul un stockage local (localStorage) est utilisé pour mémoriser votre email entre les sessions.</p>
