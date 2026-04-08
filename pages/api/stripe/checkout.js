@@ -10,9 +10,13 @@ export default async function handler(req, res) {
   }
  
   const origin = req.headers.origin || "";
-  if (!origin.includes("localhost") && !origin.includes("vercel.app")) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+if (
+  !origin.includes("localhost") &&
+  !origin.includes("vercel.app") &&
+  !origin.includes("facturai-x.fr")
+) {
+  return res.status(403).json({ error: "Forbidden" });
+}
  
   try {
     const session = await stripe.checkout.sessions.create({
